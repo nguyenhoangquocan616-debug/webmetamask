@@ -7,184 +7,146 @@
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #1e3c72, #2a5298);
       color: white;
       margin: 0;
-      padding: 0;
-      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
     .container {
       background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
       padding: 40px;
       width: 90%;
       max-width: 500px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.2);
     }
-    h1 {
-      margin-bottom: 10px;
-      font-size: 2.8rem;
-    }
-    .subtitle {
-      margin-bottom: 30px;
-      opacity: 0.9;
-    }
-    button {
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      padding: 14px 32px;
-      font-size: 1.2rem;
-      border-radius: 50px;
-      cursor: pointer;
-      margin: 12px;
-      transition: all 0.3s;
-    }
-    button:hover {
-      background: #ff4757;
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(255,107,107,0.4);
-    }
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-    #status {
-      margin-top: 25px;
-      font-size: 1.1rem;
-      min-height: 60px;
-    }
+    h1 { margin-bottom: 5px; font-size: 2.5rem; }
+    .subtitle { margin-bottom: 30px; opacity: 0.8; font-style: italic; }
     .info {
-      background: rgba(0,0,0,0.2);
-      padding: 15px;
-      border-radius: 12px;
-      margin: 20px 0;
+      background: rgba(0,0,0,0.25);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      text-align: left;
     }
+    .info p { margin: 10px 0; font-size: 0.95rem; }
     .address {
       word-break: break-all;
-      font-family: monospace;
-      background: rgba(0,0,0,0.3);
-      padding: 8px 12px;
-      border-radius: 8px;
+      font-family: 'Courier New', Courier, monospace;
+      color: #74b9ff;
     }
+    button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    #connectBtn { background: #00cec9; color: #fff; }
+    #claimBtn { background: #ff7675; color: #fff; }
+    button:hover { opacity: 0.9; transform: scale(1.02); }
+    button:disabled { background: #636e72; cursor: not-allowed; transform: none; }
+    #status { margin-top: 20px; font-weight: bold; color: #fab1a0; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Nhom 8 Token</h1>
-  <p class="subtitle">NHOM8 — Token nhóm 8</p>
+  <p class="subtitle">NHOM8 — Dự án Web3 Nhóm 8</p>
 
   <div class="info">
-    <p>Contract: <span id="contractAddr">Chưa có contract (test ví)</span></p>
-    <p id="yourAddress">Địa chỉ ví: chưa kết nối</p>
-    <p id="yourBalance">Số dư NHOM8: 0 (chưa kết nối contract)</p>
+    <p><b>Hợp đồng:</b> <span id="contractDisplay" class="address">Đang chờ cập nhật...</span></p>
+    <p><b>Ví của bạn:</b> <span id="userDisplay" class="address">Chưa kết nối</span></p>
+    <p><b>Số dư hiện tại:</b> <span id="balanceDisplay">0</span> NHOM8</p>
   </div>
 
   <button id="connectBtn">Kết nối MetaMask</button>
-  <button id="claimBtn" disabled>Nhận 100 NHOM8</button>
+  <button id="claimBtn" disabled>Nhận 100 NHOM8 miễn phí</button>
 
   <div id="status"></div>
 </div>
 
 <script>
-// === CÁC GIÁ TRỊ CHÍNH (tạm tắt contract để test) ===
-const CONTRACT_ADDRESS = "";  // Tạm bỏ để test kết nối ví (sẽ thêm sau)
-const CLAIM_AMOUNT     = "100000000000000000000"; // 100 token (18 decimals)
-const YOUR_WALLET      = "";  // Tạm bỏ (ví deployer)
+// 1. THAY ĐỊA CHỈ SAU KHI DEPLOY TRÊN REMIX VÀO ĐÂY
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; 
 
-// ABI (giữ nguyên nhưng chưa dùng)
+// 2. ABI để Web hiểu các hàm của Smart Contract
 const TOKEN_ABI = [
-  {
-    "constant": true,
-    "inputs": [{"name": "_owner", "type": "address"}],
-    "name": "balanceOf",
-    "outputs": [{"name": "balance", "type": "uint256"}],
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {"name": "_to", "type": "address"},
-      {"name": "_value", "type": "uint256"}
-    ],
-    "name": "transfer",
-    "outputs": [{"name": "success", "type": "bool"}],
-    "type": "function"
-  }
+  {"inputs":[],"name":"claim100","outputs":[],"stateMutability":"nonpayable","type":"function"},
+  {"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
 ];
 
 let web3;
 let userAccount;
+let tokenContract;
 
-// Kết nối MetaMask
-async function connectWallet() {
-  const status = document.getElementById("status");
-  const connectBtn = document.getElementById("connectBtn");
-
-  if (!window.ethereum) {
-    status.innerHTML = "Vui lòng cài MetaMask!";
-    return;
-  }
-
+async function updateBalance() {
+  if (CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") return;
   try {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    userAccount = accounts[0];
-
-    web3 = new Web3(window.ethereum);
-
-    // Tạm không khởi tạo contract để tránh lỗi
-    // tokenContract = new web3.eth.Contract(TOKEN_ABI, CONTRACT_ADDRESS);
-
-    document.getElementById("yourAddress").innerHTML = 
-      `Địa chỉ ví: <span class="address">${userAccount}</span>`;
-
-    document.getElementById("contractAddr").innerHTML = 
-      `Chưa có contract (test ví)`;
-
-    connectBtn.innerHTML = "Đã kết nối ✓";
-    connectBtn.disabled = true;
-
-    // Tạm không update balance (vì chưa có contract)
-    document.getElementById("yourBalance").innerHTML = 
-      `Số dư NHOM8: 0 (chưa kết nối contract)`;
-
-    // Tạm disable nút claim vì chưa có contract
-    // document.getElementById("claimBtn").disabled = false;
-
-    status.innerHTML = "Kết nối ví thành công! (Contract chưa được thêm)";
+    const balance = await tokenContract.methods.balanceOf(userAccount).call();
+    // Chia cho 10^18 vì token có 18 chữ số thập phân
+    const formattedBalance = web3.utils.fromWei(balance, 'ether');
+    document.getElementById("balanceDisplay").innerText = formattedBalance;
   } catch (err) {
-    console.error(err);
-    status.innerHTML = "Kết nối thất bại: " + (err.message || err);
+    console.error("Lỗi cập nhật số dư:", err);
   }
 }
 
-// Tạm tắt function claim (sẽ bật lại sau khi có contract)
+async function connectWallet() {
+  if (window.ethereum) {
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      userAccount = accounts[0];
+      web3 = new Web3(window.ethereum);
+      
+      document.getElementById("userDisplay").innerText = userAccount;
+      document.getElementById("connectBtn").innerText = "Đã kết nối ✓";
+      document.getElementById("connectBtn").disabled = true;
+
+      if (CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000") {
+        tokenContract = new web3.eth.Contract(TOKEN_ABI, CONTRACT_ADDRESS);
+        document.getElementById("contractDisplay").innerText = CONTRACT_ADDRESS;
+        document.getElementById("claimBtn").disabled = false;
+        updateBalance();
+        document.getElementById("status").innerText = "Sẵn sàng nhận Token!";
+      } else {
+        document.getElementById("status").innerText = "Lưu ý: Bạn chưa điền CONTRACT_ADDRESS vào code.";
+      }
+    } catch (err) {
+      document.getElementById("status").innerText = "Từ chối kết nối!";
+    }
+  } else {
+    alert("Vui lòng cài đặt MetaMask!");
+  }
+}
+
 async function claimToken() {
-  document.getElementById("status").innerHTML = 
-    "Chưa có contract hợp lệ. Vui lòng thêm địa chỉ contract thật!";
+  document.getElementById("status").innerText = "Đang gửi giao dịch... Vui lòng xác nhận trên MetaMask.";
+  try {
+    await tokenContract.methods.claim100().send({ from: userAccount });
+    document.getElementById("status").innerText = "Thành công! Bạn đã nhận 100 NHOM8.";
+    updateBalance();
+  } catch (err) {
+    document.getElementById("status").innerText = "Giao dịch thất bại hoặc bị hủy.";
+  }
 }
 
-// Sự kiện
-document.getElementById("connectBtn").addEventListener("click", connectWallet);
-document.getElementById("claimBtn").addEventListener("click", claimToken);
-
-// Tự động reconnect nếu đã connect trước đó
-window.addEventListener("load", async () => {
-  if (window.ethereum && window.ethereum.selectedAddress) {
-    await connectWallet();
-  }
-});
+document.getElementById("connectBtn").onclick = connectWallet;
+document.getElementById("claimBtn").onclick = claimToken;
 </script>
 
 </body>
 </html>
+
