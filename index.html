@@ -1,117 +1,108 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nhom 8 Token - Nhận Token Miễn Phí</title>
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.37);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.18);
-        }
-
-        h1 {
-            margin-bottom: 10px;
-            font-size: 2.8rem;
-        }
-
-        .subtitle {
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-
-        button {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            margin: 12px;
-            transition: all 0.3s;
-        }
-
-            button:hover {
-                background: #ff4757;
-                transform: translateY(-3px);
-                box-shadow: 0 10px 20px rgba(255,107,107,0.4);
-            }
-
-            button:disabled {
-                background: #555;
-                cursor: not-allowed;
-                transform: none;
-                box-shadow: none;
-            }
-
-        #status {
-            margin-top: 25px;
-            font-size: 1.1rem;
-            min-height: 60px;
-        }
-
-        .info {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 12px;
-            margin: 20px 0;
-        }
-
-        .address {
-            word-break: break-all;
-            font-family: monospace;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 12px;
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nhom 8 Token - Nhận Token Miễn Phí</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2.8rem;
+    }
+    .subtitle {
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    button {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      font-size: 1.2rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin: 12px;
+      transition: all 0.3s;
+    }
+    button:hover {
+      background: #ff4757;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255,107,107,0.4);
+    }
+    button:disabled {
+      background: #555;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    #status {
+      margin-top: 25px;
+      font-size: 1.1rem;
+      min-height: 60px;
+    }
+    .info {
+      background: rgba(0,0,0,0.2);
+      padding: 15px;
+      border-radius: 12px;
+      margin: 20px 0;
+    }
+    .address {
+      word-break: break-all;
+      font-family: monospace;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Nhom 8 Token</h1>
-        <p class="subtitle">NHOM8 — Token nhóm 8</p>
+<div class="container">
+  <h1>Nhom 8 Token</h1>
+  <p class="subtitle">NHOM8 — Token nhóm 8</p>
 
-        <div class="info">
-            <p>Contract: <span id="contractAddr">Chưa kết nối...</span></p>
-            <p id="yourAddress">Địa chỉ ví: chưa kết nối</p>
-            <p id="yourBalance">Số dư NHOM8: 0</p>
-        </div>
+  <div class="info">
+    <p>Contract: <span id="contractAddr">Chưa có contract (test ví)</span></p>
+    <p id="yourAddress">Địa chỉ ví: chưa kết nối</p>
+    <p id="yourBalance">Số dư NHOM8: 0 (chưa kết nối contract)</p>
+  </div>
 
-        <button id="connectBtn">Kết nối MetaMask</button>
-        <button id="claimBtn" disabled>Nhận 100 NHOM8</button>
+  <button id="connectBtn">Kết nối MetaMask</button>
+  <button id="claimBtn" disabled>Nhận 100 NHOM8</button>
 
-        <div id="status"></div>
-    </div>
+  <div id="status"></div>
+</div>
 
-    <script>
-// === THAY ĐỔI 3 GIÁ TRỊ NÀY ===
-const CONTRACT_ADDRESS = "0x...điền địa chỉ contract NHOM8 của bạn...";   // ← thay
+<script>
+// === CÁC GIÁ TRỊ CHÍNH (tạm tắt contract để test) ===
+const CONTRACT_ADDRESS = "";  // Tạm bỏ để test kết nối ví (sẽ thêm sau)
 const CLAIM_AMOUNT     = "100000000000000000000"; // 100 token (18 decimals)
-const YOUR_WALLET      = "0x...địa chỉ ví bạn deploy contract...";      // ← thay (để gửi token)
+const YOUR_WALLET      = "";  // Tạm bỏ (ví deployer)
 
-// ABI tối thiểu (chỉ cần 2 hàm)
+// ABI (giữ nguyên nhưng chưa dùng)
 const TOKEN_ABI = [
   {
     "constant": true,
@@ -133,7 +124,6 @@ const TOKEN_ABI = [
 ];
 
 let web3;
-let tokenContract;
 let userAccount;
 
 // Kết nối MetaMask
@@ -151,62 +141,37 @@ async function connectWallet() {
     userAccount = accounts[0];
 
     web3 = new Web3(window.ethereum);
-    tokenContract = new web3.eth.Contract(TOKEN_ABI, CONTRACT_ADDRESS);
 
-    document.getElementById("yourAddress").innerHTML =
+    // Tạm không khởi tạo contract để tránh lỗi
+    // tokenContract = new web3.eth.Contract(TOKEN_ABI, CONTRACT_ADDRESS);
+
+    document.getElementById("yourAddress").innerHTML = 
       `Địa chỉ ví: <span class="address">${userAccount}</span>`;
 
-    document.getElementById("contractAddr").innerHTML =
-      `<span class="address">${CONTRACT_ADDRESS}</span>`;
+    document.getElementById("contractAddr").innerHTML = 
+      `Chưa có contract (test ví)`;
 
     connectBtn.innerHTML = "Đã kết nối ✓";
     connectBtn.disabled = true;
 
-    await updateBalance();
+    // Tạm không update balance (vì chưa có contract)
+    document.getElementById("yourBalance").innerHTML = 
+      `Số dư NHOM8: 0 (chưa kết nối contract)`;
 
-    document.getElementById("claimBtn").disabled = false;
-    status.innerHTML = "Kết nối thành công! Bạn có thể nhận token.";
+    // Tạm disable nút claim vì chưa có contract
+    // document.getElementById("claimBtn").disabled = false;
+
+    status.innerHTML = "Kết nối ví thành công! (Contract chưa được thêm)";
   } catch (err) {
     console.error(err);
     status.innerHTML = "Kết nối thất bại: " + (err.message || err);
   }
 }
 
-// Cập nhật số dư
-async function updateBalance() {
-  if (!tokenContract || !userAccount) return;
-  try {
-    const bal = await tokenContract.methods.balanceOf(userAccount).call();
-    const balReadable = web3.utils.fromWei(bal, "ether");
-    document.getElementById("yourBalance").innerHTML =
-      `Số dư NHOM8: ${Number(balReadable).toLocaleString()} NHOM8`;
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-// Claim → gửi token từ ví deployer
+// Tạm tắt function claim (sẽ bật lại sau khi có contract)
 async function claimToken() {
-  const status = document.getElementById("status");
-  status.innerHTML = "Đang gửi giao dịch...";
-
-  try {
-    const amount = CLAIM_AMOUNT;
-
-    // Gọi transfer từ ví bạn (phải mở MetaMask bằng ví deployer)
-    const tx = await tokenContract.methods.transfer(userAccount, amount).send({
-      from: YOUR_WALLET   // ← MetaMask phải đang mở ví này
-    });
-
-    status.innerHTML = `Giao dịch thành công!<br>
-      Tx hash: <a href="https://sepolia.etherscan.io/tx/${tx.transactionHash}" target="_blank">
-      ${tx.transactionHash.slice(0,10)}...</a>`;
-
-    await updateBalance();
-  } catch (err) {
-    console.error(err);
-    status.innerHTML = "Lỗi: " + (err.message || err);
-  }
+  document.getElementById("status").innerHTML = 
+    "Chưa có contract hợp lệ. Vui lòng thêm địa chỉ contract thật!";
 }
 
 // Sự kiện
@@ -219,7 +184,7 @@ window.addEventListener("load", async () => {
     await connectWallet();
   }
 });
-    </script>
+</script>
 
 </body>
 </html>
